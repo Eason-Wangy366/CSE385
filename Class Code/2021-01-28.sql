@@ -1,18 +1,4 @@
-﻿USE master;
-GO
-
--- Older version but is safe
-IF DB_ID('Example') IS NOT NULL
-	DROP DATABASE Example;
-GO
-
--- Newer version but not as safe
-DROP DATABASE IF EXISTS Example;
-GO
-
-CREATE DATABASE Example;
-GO
-
+﻿
 USE Example;
 GO
 
@@ -63,6 +49,8 @@ CREATE TABLE tblCars (
 		model	VARCHAR(30)	NOT NULL,
 		year	INT			NOT NULL,
 );
+
+
 
 BULK INSERT tblCars
 	FROM 'c:\temp\CarData.txt'

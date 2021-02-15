@@ -1,5 +1,5 @@
 ﻿-- C.R.U.D
-/*
+
 	
 -- CREATE (INSERT)
 
@@ -54,4 +54,4 @@
 	WHERE friendId > 10
 
 	SELECT * FROM tblFriends
-*/
+
