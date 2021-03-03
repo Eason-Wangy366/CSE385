@@ -57,7 +57,7 @@ GO
 	Return the VendorName and total payments
 */
 
-	SELECT TOP 10 V.VendorName,SUM(I.PaymentTotal) AS TotalPayments
+	SELECT TOP(10) V.VendorName,SUM(I.PaymentTotal) AS TotalPayments
 	FROM Invoices I
 		JOIN Vendors V ON I.VendorID = V.VendorID
 	GROUP BY V.VendorName
@@ -67,14 +67,14 @@ GO
 
 
 /********************************************************************************* Q5: 10 Records
-	List the top 10 vendors with the most number of invoices (included ties). 
+	List the top 10 vendors with the most number of invoices ( included ties). 
 	Return VendorName, the total number of invoices, and the total amount of the 
 	invoice totals. Name columns VendorName, InvoiceCount, and InvoiceSum 
 	Use new school notation.
 */
 	
 	
-	SELECT TOP 10 WITH TIES V.VendorName,COUNT(I.VendorID) AS  InvoiceCount, SUM(I.InvoiceTotal) AS InvoiceSum
+	SELECT TOP(10) WITH TIES V.VendorName,COUNT(I.VendorID) AS  InvoiceCount, SUM(I.InvoiceTotal) AS InvoiceSum
 	FROM Vendors V
 		JOIN Invoices I ON I.VendorID = V.VendorID
 	GROUP BY V.VendorName 
@@ -90,15 +90,14 @@ GO
 			secondary sorter
 */
 
-	DECLARE @page INT = 3, @records INT = 10
 
 	SELECT V.VendorName,COUNT(I.VendorID) AS  InvoiceCount, SUM(I.InvoiceTotal) AS InvoiceSum
 	FROM Vendors V
 		JOIN Invoices I ON I.VendorID = V.VendorID
 	GROUP BY V.VendorName 
 	ORDER BY COUNT(I.VendorID) DESC
-		OFFSET ((@page-1) * @records) ROWS
-		FETCH NEXT @records ROWS ONLY
+		OFFSET 20 ROWS
+		FETCH NEXT 10 ROWS ONLY
 
 
 /********************************************************************************* Q7: 6 Records
@@ -108,8 +107,14 @@ GO
 	LineItemSum. Sort the list by the LineItemCount from highest to lowest
 */
 
-
-
+	SELECT	G.AccountDescription,
+			COUNT(G.AccountDescription) AS LineItemCount,
+			SUM(I.InvoiceLineItemAmount) AS LineItemSum
+	FROM GLAccounts G
+		JOIN InvoiceLineItems I ON G.AccountNo = I.AccountNo
+	GROUP BY G.AccountDescription
+	HAVING COUNT(I.InvoiceLineItemDescription) > 3
+	ORDER BY LineItemCount DESC
 
 /********************************************************************************* Q8: 22 Records
 	NOTE: This question can be done in a couple of ways.  You know one way.
@@ -118,3 +123,8 @@ GO
 	In this query you are to include a single row that has the value of NULL for 
 	the AccountNo and the total for all rows
 */
+
+
+	SELECT AccountNo,SUM(InvoiceLineItemAmount) AS InvoiceLineItemAmount
+	FROM InvoiceLineItems
+	GROUP BY AccountNo WITH ROLLUP
